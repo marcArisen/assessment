@@ -9,6 +9,7 @@ import (
 )
 
 func CreateExpenses(c echo.Context) error {
+
 	var exp model.Expenses
 	var err error
 	err = c.Bind(&exp)

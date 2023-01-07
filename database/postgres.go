@@ -52,20 +52,56 @@ func GetById(id string) (model.Expenses, error) {
 	SELECT * FROM expenses WHERE id = $1
 	`
 
-	stmt, err := db.Prepare(queryStatement)
+	st, err := db.Prepare(queryStatement)
 
 	if err != nil {
 		return model.Expenses{}, err
 	}
 
 	exp := model.Expenses{}
-	err = stmt.QueryRow(id).Scan(&exp.Id, &exp.Title, &exp.Amount, &exp.Note, &exp.Tags)
+	err = st.QueryRow(id).Scan(&exp.Id, &exp.Title, &exp.Amount, &exp.Note, &exp.Tags)
 
 	if err != nil {
 		return model.Expenses{}, err
 	}
 
 	return exp, nil
+
+}
+
+func GetAllRecords() ([]model.Expenses, error) {
+
+	queryStatement := `
+	SELECT * FROM expenses
+	`
+
+	st, err := db.Prepare(queryStatement)
+
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err2 := st.Query()
+	if err2 != nil {
+		return nil, err
+	}
+
+	exps := []model.Expenses{}
+
+	for rows.Next() {
+
+		exp := model.Expenses{}
+
+		err = rows.Scan(&exp.Id, &exp.Title, &exp.Amount, &exp.Note, &exp.Tags)
+
+		if err != nil {
+			return exps, err
+		}
+
+		exps = append(exps, exp)
+	}
+
+	return exps, nil
 }
 
 func init() {

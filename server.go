@@ -40,8 +40,12 @@ func gracefulShutdown(e *echo.Echo) {
 }
 
 func createRoute(e *echo.Echo) {
+
 	e.POST("/expenses", api.CreateExpenses)
 	e.GET("/expenses/:id", api.GetByIdExpenses)
+	e.GET("/expenses", api.GetAllExpenses)
+	e.PUT("/expenses/:id", nil)
+
 }
 
 func main() {
