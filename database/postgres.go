@@ -46,6 +46,28 @@ func Insert(exp model.Expenses) (model.Expenses, error) {
 	return exp, nil
 }
 
+func GetById(id string) (model.Expenses, error) {
+
+	queryStatement := `
+	SELECT * FROM expenses WHERE id = $1
+	`
+
+	stmt, err := db.Prepare(queryStatement)
+
+	if err != nil {
+		return model.Expenses{}, err
+	}
+
+	exp := model.Expenses{}
+	err = stmt.QueryRow(id).Scan(&exp.Id, &exp.Title, &exp.Amount, &exp.Note, &exp.Tags)
+
+	if err != nil {
+		return model.Expenses{}, err
+	}
+
+	return exp, nil
+}
+
 func init() {
 
 	var err error

@@ -39,13 +39,18 @@ func gracefulShutdown(e *echo.Echo) {
 
 }
 
+func createRoute(e *echo.Echo) {
+	e.POST("/expenses", api.CreateExpenses)
+	e.GET("/expenses/:id", api.GetByIdExpenses)
+}
+
 func main() {
 
 	port := getPort()
 
 	e := echo.New()
 
-	e.POST("/expenses", api.CreateExpenses)
+	createRoute(e)
 
 	go func() {
 		if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed {
