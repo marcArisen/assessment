@@ -102,6 +102,22 @@ func GetAllRecords() ([]model.Expenses, error) {
 	}
 
 	return exps, nil
+
+}
+
+func Update(exp model.Expenses) (model.Expenses, error) {
+
+	updateStatement := `
+	UPDATE expenses SET title=$2 ,amount=$3 ,note=$4 ,tags=$5 WHERE id=$1 RETURNING *
+	`
+
+	err := db.QueryRow(updateStatement, exp.Id, exp.Title, exp.Amount, exp.Note, exp.Tags).Scan(&exp.Id, &exp.Title, &exp.Amount, &exp.Note, &exp.Tags)
+
+	if err != nil {
+		return exp, err
+	}
+
+	return exp, nil
 }
 
 func init() {
