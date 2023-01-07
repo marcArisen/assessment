@@ -1,0 +1,5 @@
+# start postgres container with the config
+docker run --name postgres -e POSTGRES_USER=myusername -e POSTGRES_PASSWORD=mypassword -e POSTGRES_DB=expense-db -p 5432:5432 -d postgres
+
+# start echo server in port 8081
+DATABASE_URL=postgres://myusername:mypassword@0.0.0.0:5432/expense-db?sslmode=disable PORT=8081 go run server.go

@@ -2,10 +2,12 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/labstack/echo/v4"
+	_ "github.com/lib/pq"
 	"github.com/marcArisen/assessment/model"
 )
 
@@ -30,7 +32,23 @@ func createTable(db *sql.DB) {
 
 }
 
-func Insert(exp model.Expenses) (model.Expenses, error) {
+func CreateExpenses(c echo.Context) error {
+	var exp model.Expenses
+	var err error
+	err = c.Bind(&exp)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	exp, err = insert(exp)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusCreated, exp)
+}
+
+func insert(exp model.Expenses) (model.Expenses, error) {
 
 	insert := `
 		INSERT INTO expenses(title,amount,note,tags) values($1,$2,$3,$4) RETURNING *
@@ -47,8 +65,6 @@ func Insert(exp model.Expenses) (model.Expenses, error) {
 }
 
 func init() {
-
-	fmt.Printf("GO in here database")
 
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 
