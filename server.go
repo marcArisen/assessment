@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/marcArisen/assessment/database"
+	"github.com/marcArisen/assessment/api"
 )
 
 func getPort() string {
@@ -45,7 +45,7 @@ func main() {
 
 	e := echo.New()
 
-	e.POST("/expenses", database.CreateExpenses)
+	e.POST("/expenses", api.CreateExpenses)
 
 	go func() {
 		if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed {
